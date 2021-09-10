@@ -1,12 +1,20 @@
 import GLS
 from shapely import wkt
+from shapely.geometry import Point, LineString, Polygon
 
 adb = GLS.Adb
 
 class AlbionDataBase:
         
-    def __init__(self,iTable):
-        self.FTable = iTable
+    def __init__(self,iTable=-1):
+        if iTable != -1:
+            self.FTable = iTable
+
+    def CreateTable(self,iName):
+        self.FTable = adb.CreateTable(iName)
+
+    def Pointer(self):
+        return self.FTable
 
     def Name(self):
         """
@@ -88,3 +96,42 @@ class AlbionDataBase:
     def GetPolygon(self,iFld,iRec): 
         return wkt.loads(adb.GetPolygon(self.FTable,iFld,iRec))
 
+    def SetPoint(self,iFld,iRec,iValue): 
+        return adb.SetPoint(self.FTable,iFld,iRec,str(iValue))
+
+    def SetPolyline(self,iFld,iRec,iValue: LineString):  
+        return adb.SetPolyline(self.FTable,iFld,iRec,str(iValue))
+
+    def SetPolygon(self,iFld,iRec,iValue): 
+        return adb.SetPolygon(self.FTable,iFld,iRec,str(iValue))
+
+    def AddRecord(self):
+        return adb.AddRecord(self.FTable)
+
+    def EraseRecord(self,iRec):
+        return adb.EraseRecord(self.FTable,iRec)
+
+    def AddField(self,iName,iType):
+        """
+            AdbFTNull                   = 0;
+            AdbFTBool                   = 1;
+            AdbFTInt32                  = 2;
+            AdbFTInt64                  = 3;
+            AdbFTDouble                 = 4;
+            AdbFTText                   = 5;
+            AdbFTDate                   = 6;
+            AdbFTGuid                   = 7;
+            AdbFTTime                   = 8;
+            AdbFTBin                    = 9;
+            AdbFTGeomBEGIN              = 32;
+            AdbFTGeomPoint              = AdbFTGeomBEGIN;
+            AdbFTGeomMultiPoint         = 33;
+            AdbFTGeomPolyline           = 34;
+            AdbFTGeomPolygon            = 35;
+            AdbFTGeomEND                = 36;
+        """
+        return adb.AddField(self.FTable,iName,iType)
+
+
+    def Close(self):
+        return adb.CloseTableAndDB(self.FTable)

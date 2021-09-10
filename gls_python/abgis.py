@@ -1,4 +1,5 @@
 import GLS
+import gls_python.adb as adb
 
 gis = GLS.Gis
 
@@ -16,11 +17,17 @@ class AlbionGisLayer:
   def GetLayerName(self,layer):
     return gis.GetLayerName(layer)
 
-  def GetTableFromLayer(self,layer):
-    return gis.GetTableFromLayer(layer)
+  def GetTableFromLayerIndex(self,layer):
+    return adb.AlbionDataBase(gis.GetTableFromLayer(layer))
     
   def GetTableByLayerName(self,layername):
-    return gis.GetTableByLayerName(layername)
+    return adb.AlbionDataBase(gis.GetTableByLayerName(layername))
     
   def GetTableByTableName(self,layername):	
-    return gis.GetTableByTableName(layername)
+    return adb.AlbionDataBase(gis.GetTableByTableName(layername))
+
+  def AddTableToGIS(self,iTable):  
+    return gis.AddTableToGIS(iTable)
+
+  def RefreshRendering(self):
+    gis.RefreshRendering()
