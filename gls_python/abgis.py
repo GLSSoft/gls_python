@@ -31,3 +31,6 @@ class AlbionGisLayer:
 
   def RefreshRendering(self):
     gis.RefreshRendering()
+
+  def CommandLine(self, iFunction):
+    gis.CommandLine(iFunction)

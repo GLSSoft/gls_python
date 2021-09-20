@@ -1,5 +1,8 @@
 Process:
 
+//if you also installed the 32 bit python then you will need to add -3.9-32 after all py instructions
+// i.e. py -3.9-32 install wheel
+
 // Install this to be able to install gls_python and shapely
 py -m pip install wheel
 
