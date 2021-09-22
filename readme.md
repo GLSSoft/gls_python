@@ -8,9 +8,16 @@ py -m pip install wheel
 
 // install these, optional
 py -m pip install geos
+py -3.9-32 -m pip install geos
+
 py -m pip install numpy
+py -3.9-32 -m pip install numpy
+
 py -m pip install matplotlib
+py -3.9-32 -m pip install matplotlib
+
 py -m pip install seaborn
+py -3.9-32 -m pip install seaborn
 
 // Open command prompt in the location where you pulled the repo
 // There should be a setup.py file in there
@@ -30,4 +37,4 @@ https://www.lfd.uci.edu/~gohlke/pythonlibs/#shapely
 Currently using Shapely‑1.7.1‑cp39‑cp39‑win32.whl
 download and then pip install:
 
-py -m pip install Shapely‑1.7.1‑cp39‑cp39‑win32.whl
+py -3.9-32 -m pip install Shapely‑1.7.1‑cp39‑cp39‑win32.whl
