@@ -1,3 +1,4 @@
+from shapely.geometry.base import BaseGeometry
 import GLS
 from shapely import wkt
 from shapely.geometry import Point, LineString, Polygon
@@ -27,6 +28,12 @@ class AlbionDataBase:
         Returns the index of the field name. A -1 result means the field does not exist      
         """
         return adb.FieldIndex(self.FTable, iName)
+
+    def FieldIndexGeom(self,iName): 
+        """
+        Returns the index of the first geometry field. A -1 result means the field does not exist      
+        """
+        return adb.FieldIndexGeom(self.FTable, iName)
 
     def FieldName(self,iFld):  
         """
@@ -84,16 +91,13 @@ class AlbionDataBase:
     def SetBool(self,iFld,iRec,iValue): 
         return adb.SetBool(self.FTable, iFld, iRec, iValue)
 
-    def RecordsFromValue(self,iFld,iValue):
-        return adb.RecordsFromValue(self.FTable,iFld,iValue)
-
-    def GetPoint(self,iFld,iRec): 
+    def GetPoint(self,iFld,iRec) -> BaseGeometry: 
         return wkt.loads(adb.GetPoint(self.FTable,iFld,iRec))
 
-    def GetPolyline(self,iFld,iRec):  
+    def GetPolyline(self,iFld,iRec) -> BaseGeometry:  
         return wkt.loads(adb.GetPolyline(self.FTable,iFld,iRec))
 
-    def GetPolygon(self,iFld,iRec): 
+    def GetPolygon(self,iFld,iRec) -> BaseGeometry: 
         return wkt.loads(adb.GetPolygon(self.FTable,iFld,iRec))
 
     def SetPoint(self,iFld,iRec,iValue): 
@@ -108,10 +112,10 @@ class AlbionDataBase:
     def AddRecord(self):
         return adb.AddRecord(self.FTable)
 
-    def EraseRecord(self,iRec):
+    def EraseRecord(self,iRec: int):
         return adb.EraseRecord(self.FTable,iRec)
 
-    def AddField(self,iName,iType):
+    def AddField(self,iName: str,iType: int):
         """
             AdbFTNull                   = 0;
             AdbFTBool                   = 1;
@@ -132,6 +136,45 @@ class AlbionDataBase:
         """
         return adb.AddField(self.FTable,iName,iType)
 
+    def Lock(self):
+        return adb.Lock(self.FTable)
+
+    def Flush(self):
+        return adb.Flush(self.FTable)
+
+    def EraseField(self,iField: int):
+        return adb.EraseField(self.FTable,iField)
+
+    def EraseAllRecords(self):
+        return adb.EraseAllRecords(self.FTable)
 
     def Close(self):
         return adb.CloseTableAndDB(self.FTable)
+
+    def RecordsFromValue(self,iFld: int,iValue: str) -> list:
+        result = []
+        values = adb.RecordsFromValue(self.FTable,iFld,iValue)
+        for value in values:
+            result.append(value)
+        return result
+
+    def RecordsContainingTextValue(self,iFld: str,iValue: str) -> list:
+        result = []
+        values = adb.RecordsContainingTextValue(self.FTable,iFld,iValue)
+        for value in values:
+            result.append(value)
+        return result
+
+    def GetDistinctTextValues(self,iFld: int) -> list:
+        result = []
+        values = adb.GetDistinctTextValues(self.FTable,iFld)
+        for value in values:
+            result.append(value)
+        return result
+
+    def GetDistinctTextValuesNaturalSort(self,iFld: int) -> list:
+        result = []
+        values = adb.GetDistinctTextValuesNaturalSort(self.FTable,iFld)
+        for value in values:
+            result.append(value)
+        return result
