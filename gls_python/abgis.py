@@ -6,10 +6,19 @@ gis = GLS.Gis
 class AlbionGisLayer:
 
   def __init__(self):
-    self.FLayer = 0
+    pass
 
-  def GetLayerCount(self):
+  @staticmethod
+  def GetLayerCount():
     return gis.GetLayerCount()
+
+  @staticmethod
+  def RefreshRendering():
+    gis.RefreshRendering()
+
+  @staticmethod
+  def CommandLine(iFunction):
+    gis.CommandLine(iFunction)
 
   def GetLayerByIndex(self,index):
     return gis.GetLayerByIndex(index)
@@ -25,12 +34,9 @@ class AlbionGisLayer:
     
   def GetTableByTableName(self,layername):	
     return adb.AlbionDataBase(gis.GetTableByTableName(layername))
+    
+  def TablePicker(self,message):  
+    return adb.AlbionDataBase(gis.TablePicker(message))
 
   def AddTableToGIS(self,iTable):  
     return gis.AddTableToGIS(iTable)
-
-  def RefreshRendering(self):
-    gis.RefreshRendering()
-
-  def CommandLine(self, iFunction):
-    gis.CommandLine(iFunction)

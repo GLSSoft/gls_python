@@ -1,13 +1,33 @@
-from shapely.geometry.base import BaseGeometry
 import GLS
+
+from shapely.geometry.base import BaseGeometry
 from shapely import wkt
 from shapely.geometry import Point, LineString, Polygon
+from enum import IntEnum
 
 adb = GLS.Adb
 
-class AlbionDataBase:
-        
+class AlbionFieldTypes(IntEnum):
+    AdbFTNull                   = 0
+    AdbFTBool                   = 1
+    AdbFTInt32                  = 2
+    AdbFTInt64                  = 3
+    AdbFTDouble                 = 4
+    AdbFTText                   = 5
+    AdbFTDate                   = 6
+    AdbFTGuid                   = 7
+    AdbFTTime                   = 8
+    AdbFTBin                    = 9
+    AdbFTGeomBEGIN              = 32
+    AdbFTGeomPoint              = AdbFTGeomBEGIN
+    AdbFTGeomMultiPoint         = 33
+    AdbFTGeomPolyline           = 34
+    AdbFTGeomPolygon            = 35
+    AdbFTGeomEND                = 36   
+
+class AlbionDataBase:        
     def __init__(self,iTable=-1):
+        self.FTable = -1
         if iTable != -1:
             self.FTable = iTable
 
@@ -29,11 +49,11 @@ class AlbionDataBase:
         """
         return adb.FieldIndex(self.FTable, iName)
 
-    def FieldIndexGeom(self,iName): 
+    def FieldIndexGeom(self): 
         """
         Returns the index of the first geometry field. A -1 result means the field does not exist      
         """
-        return adb.FieldIndexGeom(self.FTable, iName)
+        return adb.FieldIndexGeom(self.FTable)
 
     def FieldName(self,iFld):  
         """
@@ -115,7 +135,7 @@ class AlbionDataBase:
     def EraseRecord(self,iRec: int):
         return adb.EraseRecord(self.FTable,iRec)
 
-    def AddField(self,iName: str,iType: int):
+    def AddField(self,iName: str,iType: AlbionFieldTypes):
         """
             AdbFTNull                   = 0;
             AdbFTBool                   = 1;
@@ -134,6 +154,7 @@ class AlbionDataBase:
             AdbFTGeomPolygon            = 35;
             AdbFTGeomEND                = 36;
         """
+        print(str(iType))
         return adb.AddField(self.FTable,iName,iType)
 
     def Lock(self):
@@ -154,27 +175,42 @@ class AlbionDataBase:
     def RecordsFromValue(self,iFld: int,iValue: str) -> list:
         result = []
         values = adb.RecordsFromValue(self.FTable,iFld,iValue)
-        for value in values:
-            result.append(value)
+        if not values is None:
+            for value in values:
+                result.append(value)
+        return result
+
+    def WhereClause(self,iQuery: str) -> list:
+        '''
+        Insert the part of the where clause after WHERE. The query will only run on this table
+        '''
+        result = []
+        values = adb.SqlWhereClause(self.FTable,iQuery)
+        if not values is None:
+            for value in values:
+                result.append(value)
         return result
 
     def RecordsContainingTextValue(self,iFld: str,iValue: str) -> list:
         result = []
         values = adb.RecordsContainingTextValue(self.FTable,iFld,iValue)
-        for value in values:
-            result.append(value)
+        if not values is None:
+            for value in values:
+                result.append(value)
         return result
 
     def GetDistinctTextValues(self,iFld: int) -> list:
         result = []
         values = adb.GetDistinctTextValues(self.FTable,iFld)
-        for value in values:
-            result.append(value)
+        if not values is None:
+            for value in values:
+                result.append(value)
         return result
 
     def GetDistinctTextValuesNaturalSort(self,iFld: int) -> list:
         result = []
         values = adb.GetDistinctTextValuesNaturalSort(self.FTable,iFld)
-        for value in values:
-            result.append(value)
+        if not values is None:
+            for value in values:
+                result.append(value)
         return result

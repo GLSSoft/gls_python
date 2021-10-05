@@ -8,6 +8,8 @@ import gls_python.general as general
 
 dummyPointsTable = adb.AlbionDataBase()
 model = data.Model()
+                
+numberOfPoints = 10
 
 maxX = -9999999
 maxY = -9999999
@@ -49,16 +51,16 @@ def CreateDummyPoints():
     global minX
     global minY  
     global dummyPointsTable  
+    global numberOfPoints
 
     print(str(maxX) + " " + str(minX) + " " + str(maxY) + " " + str(minY))
 
     # Create the table
     dummyPointsTable.CreateTable('DummyPoints')  
-    fldGeom = dummyPointsTable.AddField('Geometry',32)
-    fldNearestLink = dummyPointsTable.AddField('Nearest',5)
+    fldGeom = dummyPointsTable.AddField('Geometry',adb.AlbionFieldTypes.AdbFTGeomBEGIN)
+    fldNearestLink = dummyPointsTable.AddField('Nearest',adb.AlbionFieldTypes.AdbFTText)
 
-    numberOfpoints = 100
-    for i in range(numberOfpoints):
+    for i in range(numberOfPoints):
         x = random.randint(int(minX),int(maxX))
         y = random.randint(int(minY),int(maxY))
 
@@ -94,7 +96,7 @@ def FindClosest():
 
     resultTable = adb.AlbionDataBase()
     resultTable.CreateTable('Results')  
-    fldGeom = resultTable.AddField('Geometry',34)
+    fldGeom = resultTable.AddField('Geometry',adb.AlbionFieldTypes.AdbFTGeomPolyline)
 
     fldDummy = dummyPointsTable.FieldIndex("Geometry")    
     fldCode = dummyPointsTable.FieldIndex("Nearest")
@@ -126,5 +128,4 @@ if __name__ == "__main__":
     CreateRTree()
     FindClosest()
 
-    general.ShowNotification("Complete",1)  
-    
+    general.ShowNotification("Complete",1) 

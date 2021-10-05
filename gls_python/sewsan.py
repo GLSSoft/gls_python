@@ -6,33 +6,42 @@ model = GLS.Model
 class Model:
 
   def __init__(self):
-    self.FLayer = 0
+    pass
 
-  def BeginModelEvent(self):
+  @staticmethod
+  def BeginModelEvent():
     return model.BeginModelEvent()
 
-  def EndModelEvent(self):
+  @staticmethod
+  def EndModelEvent():
     return model.EndModelEvent()
 
-  def GravityTable(self):
+  @staticmethod
+  def GravityTable():
     return adb.AlbionDataBase(model.GravityTable())
 
-  def RisingTable(self):
+  @staticmethod
+  def RisingTable():
     return adb.AlbionDataBase(model.RisingTable())
 
-  def StructureTable(self):
+  @staticmethod
+  def StructureTable():
     return adb.AlbionDataBase(model.StructureTable())
 
-  def PumpTable(self):
+  @staticmethod
+  def PumpTable():
     return adb.AlbionDataBase(model.PumpTable())
 
-  def DiversionTable(self):
+  @staticmethod
+  def DiversionTable():
     return adb.AlbionDataBase(model.DiversionTable())
 
-  def UserHydrographTable(self):
+  @staticmethod
+  def UserHydrographTable():
     return adb.AlbionDataBase(model.UserHydrographTable())
 
-  def AppurtenanceTable(self):
+  @staticmethod
+  def AppurtenanceTable():
     return adb.AlbionDataBase(model.AppurtenanceTable())
 
 
