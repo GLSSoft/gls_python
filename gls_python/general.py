@@ -50,7 +50,7 @@ class AlbionMessageTypes(IntEnum):
 def CommandLine(iFunction):
   general.CommandLine(iFunction)
 
-def ShowNotification(message,index: AlbionFieldTypes):
+def ShowNotification(message,index: AlbionMessageTypes):
   """
       
   """
