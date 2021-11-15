@@ -3,7 +3,7 @@ from enum import IntEnum
 
 general = GLS.General
 
-class AlbionFieldTypes(IntEnum):
+class AlbionMessageTypes(IntEnum):
       # Notifications
       ntShowMsg = 0
       ntShowSuccessMsg = 1 
