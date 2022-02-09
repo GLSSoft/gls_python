@@ -1,8 +1,58 @@
+from turtle import color
+from tqdm import tqdm
+from wadiso import Model as activemodel
 import matplotlib.pyplot as plt
-import geopandas
-from cartopy import crs as ccrs
+from abgis import AlbionGisLayer as AbGIS
+import matplotlib.colors
 
-path = geopandas.datasets.get_path('naturalearth_lowres')
-df = geopandas.read_file(path)
-# Add a column we'll use later
-df['gdp_pp'] = df['gdp_md_est'] / df['pop_est']
+from tqdm import tqdm
+
+def TestRoutine1():
+    
+    nodeTable = activemodel.NodeTable()
+    pipeTable = activemodel.PipeTable()
+    
+    nodeFldOutput = nodeTable.FieldIndex("Output")
+    pipeFldFlow = pipeTable.FieldIndex("Flow")    
+    pipeFldOpen = pipeTable.FieldIndex("Pipe_Status")
+    
+    nodeTable.Lock() #required to edit the model
+    #nodeTable.SetDouble(nodeFldOutput, 2, 0)
+    nodeTable.SetDouble(nodeFldOutput, 5, 0)
+    #nodeTable.SetDouble(nodeFldOutput, 6, 0)      
+    
+    pipeTable.SetText(pipeFldOpen, 3, "CLOSED")    
+    #pipeTable.SetText(pipeFldOpen, 3, "OPEN")      
+    
+    AbGIS.CommandLine("Wadiso.BalanceModel")    
+        
+    nodeResultOutput = nodeTable.GetDoubleAll(nodeFldOutput)
+    pipeResultFlow   = pipeTable.GetDoubleAll(pipeFldFlow)    
+    
+    cmap = plt.cm.rainbow
+    norm = matplotlib.colors.Normalize(vmin=0, vmax=20)    
+    
+    nodeGeom = nodeTable.GetPointAll()
+    buffer = nodeGeom.buffer(200, cap_style = 3)
+    for i in tqdm(range(len(buffer))):
+        x,y =  buffer[i].exterior.xy 
+        plt.plot(x,y,color=cmap(norm(nodeResultOutput[i]))) 
+    
+    norm = matplotlib.colors.Normalize(vmin=0, vmax=200)
+    
+    pipeGeom = pipeTable.GetPolylineAll()
+    buffer = pipeGeom.buffer(20)
+    for i in tqdm(range(len(buffer))):
+        x,y =  buffer[i].exterior.xy   
+        plt.plot(x,y,color=cmap(norm(pipeResultFlow[i]))) 
+
+    # Add title
+    plt.title("WGS84 projection")
+
+    # Remove empty white space around the plot
+    plt.tight_layout()  
+
+    plt.show()
+
+if __name__ == "__main__":
+    TestRoutine1()  

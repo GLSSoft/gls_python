@@ -8,6 +8,7 @@ import requests
 import json
 import time
 from tqdm import tqdm
+import geopandas as gpd
 
 #adb = "http://localhost:8080/GLS_ADB/"
 adb = "http://127.0.0.1:8080/GLS_ADB/"
@@ -189,13 +190,11 @@ class AlbionDataBase:
         try:
             query_fields = '{"Function": "GetPolylineAll","Table":"' + str(self.FTable) +  '"}'
             response = self.session.get(adb,params=query_fields)
-            #print('Retrieved data')
-            #with o pen('json_polyline.json', 'w') as outfile:
-            #    outfile.write(response.text)
-            allGeom = []
             data = json.loads(response.text)
+            wktArray = []
             for line in data:
-                allGeom.append(wkt.loads(data[line]))            
+                wktArray.append(data[line])           
+            allGeom = gpd.GeoSeries.from_wkt(wktArray)                                                       
             return allGeom
         except:
             print("Error: GetPolylineAll")
@@ -210,6 +209,77 @@ class AlbionDataBase:
         except:
             print("Error: GetPoint")
             return 0
+        
+    def GetPointAll(self):  
+        #https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry
+        try:
+            query_fields = '{"Function": "GetPointAll","Table":"' + str(self.FTable) +  '"}'
+            response = self.session.get(adb,params=query_fields)
+            data = json.loads(response.text)
+            wktArray = []
+            for line in data:
+                wktArray.append(data[line])           
+            allGeom = gpd.GeoSeries.from_wkt(wktArray)                                                       
+            return allGeom
+        except:
+            print("Error: GetPointAll")
+            return 0
+
+    def GetDoubleAll(self,iFld) -> float: 
+        #https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry
+        try:
+            query_fields = '{"Function": "GetDoubleAll","Table":"' + str(self.FTable) +  '","Field":"' + str(iFld) +  '"}'
+            response = self.session.get(adb,params=query_fields)
+            data = json.loads(response.text)
+            result = []
+            for line in data:
+                result.append(data[line])      
+            return  result
+        except:
+            print("Error: GetDoubleAll")
+            return 0
+
+    def GetIntegerAll(self,iFld) -> int: 
+        #https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry
+        try:
+            query_fields = '{"Function": "GetIntegerAll","Table":"' + str(self.FTable) +  '","Field":"' + str(iFld) +  '"}'
+            response = self.session.get(adb,params=query_fields)
+            data = json.loads(response.text)
+            result = []
+            for line in data:
+                result.append(data[line])      
+            return  result
+        except:
+            print("Error: GetIntegerAll")
+            return 0
+
+    def GetBoolAll(self,iFld) -> bool: 
+        #https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry
+        try:
+            query_fields = '{"Function": "GetBoolAll","Table":"' + str(self.FTable) +  '","Field":"' + str(iFld) +  '"}'
+            response = self.session.get(adb,params=query_fields)
+            data = json.loads(response.text)
+            result = []
+            for line in data:
+                result.append(data[line])      
+            return  result
+        except:
+            print("Error: GetBoolAll")
+            return 0
+
+    def GetTextAll(self,iFld) -> str: 
+        #https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry
+        try:
+            query_fields = '{"Function": "GetTextAll","Table":"' + str(self.FTable) +  '","Field":"' + str(iFld) +  '"}'
+            response = self.session.get(adb,params=query_fields)
+            data = json.loads(response.text)
+            result = []
+            for line in data:
+                result.append(data[line])      
+            return  result
+        except:
+            print("Error: GetTextAll")
+            return 0
 
     def GetPolygon(self,iFld,iRec) -> BaseGeometry: 
         #https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry
@@ -221,13 +291,36 @@ class AlbionDataBase:
             print("Error: GetPolygon")
             return 0
         
+    def GetPolygonAll(self) -> list:  
+        #https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry
+        try:
+            query_fields = '{"Function": "GetPolygonAll","Table":"' + str(self.FTable) +  '"}'
+            response = self.session.get(adb,params=query_fields)
+            allGeom = []
+            data = json.loads(response.text)
+            for line in data:
+                allGeom.append(wkt.loads(data[line]))            
+            return allGeom
+        except:
+            print("Error: GetPolygonAll")
+            return 0
+        
     def SetDouble(self,iFld,iRec,iValue):
         try:
             query_fields = '{"Function": "SetDouble","Table":"' + str(self.FTable) +  '","Field":"' + str(iFld) +  '","Record":"' + str(iRec) +  '","Value":"' + str(iValue) +  '"}'
-            response = self.session.post(adb,params=query_fields)
+            response = self.session.post(adb,json=query_fields)
             return  json.loads(response.text)['Result']
         except:
             print("Error: SetDouble")
+            return 0
+        
+    def SetText(self,iFld,iRec,iValue):
+        try:
+            query_fields = '{"Function": "SetText","Table":"' + str(self.FTable) +  '","Field":"' + str(iFld) +  '","Record":"' + str(iRec) +  '","Value":"' + str(iValue) +  '"}'
+            response = self.session.post(adb,json=query_fields)
+            return  json.loads(response.text)['Result']
+        except:
+            print("Error: SetText")
             return 0
         
     def SetDoubleArray(self,iFld,iValues):
@@ -244,23 +337,88 @@ class AlbionDataBase:
                 
             text = json.dumps(query_fields)            
             
-            #with open('json_data.json', 'w') as outfile:
-            #    outfile.write(text)
-            #print(text)
-            
             response = self.session.post(adb,json=text)
             return  json.loads(response.text)['Result']
         except:
             print("Error: SetDoubleArray")
             return 0
         
+    def SetIntegerArray(self,iFld,iValues):
+        try:
+            query_fields = {
+                    'Function': 'SetIntegerArray',
+                    'Table': str(self.FTable),
+                    'Field': str(iFld),
+                    'Records':[]
+                }
+
+            for i in iValues:
+                query_fields['Records'].append(i)
+                
+            text = json.dumps(query_fields)            
+            
+            response = self.session.post(adb,json=text)
+            return  json.loads(response.text)['Result']
+        except:
+            print("Error: SetIntegerArray")
+            return 0
+        
+    def SetBoolArray(self,iFld,iValues):
+        try:
+            query_fields = {
+                    'Function': 'SetBoolArray',
+                    'Table': str(self.FTable),
+                    'Field': str(iFld),
+                    'Records':[]
+                }
+
+            for i in iValues:
+                query_fields['Records'].append(i)
+                
+            text = json.dumps(query_fields)            
+            
+            response = self.session.post(adb,json=text)
+            return  json.loads(response.text)['Result']
+        except:
+            print("Error: SetBoolArray")
+            return 0
+        
+    def SetTextArray(self,iFld,iValues):
+        try:
+            query_fields = {
+                    'Function': 'SetTextArray',
+                    'Table': str(self.FTable),
+                    'Field': str(iFld),
+                    'Records':[]
+                }
+
+            for i in iValues:
+                query_fields['Records'].append(i)
+                
+            text = json.dumps(query_fields)            
+            
+            response = self.session.post(adb,json=text)
+            return  json.loads(response.text)['Result']
+        except:
+            print("Error: SetTextArray")
+            return 0
+        
     def SetPolyline(self,iRec,iValue):
         try:
             query_fields = '{"Function": "SetPolyline","Table":"' + str(self.FTable) + '","Record":"' + str(iRec) +  '","Value":"' + str(iValue) +  '"}'
-            response = self.session.post(adb,params=query_fields)
+            response = self.session.post(adb,json=query_fields)
             return  json.loads(response.text)['Result']
         except:
             print("Error: SetPolyline")
+            return 0
+        
+    def Lock(self):
+        try:
+            query_fields = '{"Function": "Lock","Table":"' + str(self.FTable) +  '"}'
+            response = self.session.get(adb,params=query_fields)
+            return  json.loads(response.text)['Result']
+        except:
+            print("Error: Lock")
             return 0
     
 '''
