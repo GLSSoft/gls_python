@@ -17,12 +17,9 @@ def TestRoutine1():
     pipeFldOpen = pipeTable.FieldIndex("Pipe_Status")
     
     nodeTable.Lock() #required to edit the model
-    #nodeTable.SetDouble(nodeFldOutput, 2, 0)
-    nodeTable.SetDouble(nodeFldOutput, 5, 0)
-    #nodeTable.SetDouble(nodeFldOutput, 6, 0)      
+    nodeTable.SetDouble(nodeFldOutput, 5, 200)     
     
-    pipeTable.SetText(pipeFldOpen, 3, "CLOSED")    
-    #pipeTable.SetText(pipeFldOpen, 3, "OPEN")      
+    pipeTable.SetText(pipeFldOpen, 3, "OPEN")  #OPEN #CLOSED   
     
     AbGIS.CommandLine("Wadiso.BalanceModel")    
         
@@ -51,7 +48,7 @@ def TestRoutine1():
 
     # Remove empty white space around the plot
     plt.tight_layout()  
-
+    plt.savefig("C:\\Users\\adrian\\OneDrive - EOH\\Work\\ReportGenerator\\image.png")
     plt.show()
 
 if __name__ == "__main__":

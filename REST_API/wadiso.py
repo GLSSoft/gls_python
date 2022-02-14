@@ -12,6 +12,23 @@ class Model:
     pass
 
   @staticmethod
+  def Analyse(Senario1: str, Scenario2: str, ranges: str):
+    '''
+    Load the model at the specified location as the active model
+    '''
+    try:
+        query_fields = '{"Function": "Analyse|' + Senario1 + '|' + Scenario2 + '","Action":"' + ranges +  '"}'
+        response = requests.get(model,params=query_fields)
+        data = json.loads(response.text)
+        resultsDelta = {}
+        for line in data:
+            resultsDelta[line] = data[line]                    
+        return resultsDelta   
+    except:
+        print("Error: filename")
+        return 0
+
+  @staticmethod
   def LoadModel(filename: str):
     '''
     Load the model at the specified location as the active model
