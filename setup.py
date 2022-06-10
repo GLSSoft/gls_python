@@ -7,9 +7,9 @@ here = os.path.abspath(os.path.dirname(__file__))
 with codecs.open(os.path.join(here, "README.md"), encoding="utf-8") as fh:
     long_description = "\n" + fh.read()
 
-VERSION = '0.1.5'
-DESCRIPTION = 'GLS Model to Python'
-LONG_DESCRIPTION = 'A package that allows easier interfacing with Albion.'
+VERSION = '0.2.0'
+DESCRIPTION = 'GLS Model to Python including REST Interface'
+LONG_DESCRIPTION = 'A package that allows easier interfacing with Albion through REST API calls.'
 
 # Setting up
 setup(
